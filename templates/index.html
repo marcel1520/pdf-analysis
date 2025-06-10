@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}">
+    <title>PDF AI Assistant</title>
+</head>
+<body>
+    <h1>PDF AI Assistant</h1>
+    
+
+    <h2 style="text-align: center">1. Upload a PDF</h2>
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".pdf" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    {% if doc_id %}
+    <h2 style="text-align: center">2. Choose an Action</h2>
+    <form action="{{ url_for('process') }}" method="post">
+        <input type="hidden" name="doc_id" value="{{ doc_id }}">
+
+        <button type="submit" name="action" value="topic">Get Topic</button>
+        <button type="submit" name="action" value="summary">Get Summary</button>
+        <br><br>
+
+        <label for="lang">Translate to:</label>
+        <input type="text" id="lang" name="lang" placeholder="e.g. Arabic, Japanese" />
+        <button type="submit" name="action" value="translate">Translate</button>
+        <br><br>
+
+        <button type="submit" name="action" value="sentiment">Sentiment Analysis</button>
+    </form>
+    {% endif %}
+
+    {% if message %}
+        <p><strong>{{ message }}</strong></p>
+    {% endif %}
+
+    {% if result %}
+        <h3>Result</h3>
+        <pre>{{ result }}</pre>
+    {% endif %}
+</body>
+</html>
