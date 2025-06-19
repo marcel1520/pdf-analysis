@@ -42,5 +42,21 @@
         <h3>Result</h3>
         <pre>{{ result }}</pre>
     {% endif %}
+    <!-- Spinner Overlay -->
+     <div id="spinner-overlay">
+        <div class="spinner"></div>
+         <div class="spinner-text">Processing...</div>
+     </div>
+     <script>
+        // Show spinner on form submit
+        const forms = document.querySelectorAll('form');
+        const spinner = document.getElementById('spinner-overlay')
+
+        forms.forEach(form => {
+            form.addEventListener('submit', () => {
+                spinner.style.display = 'flex';
+            });
+        });
+     </script>
 </body>
 </html>

@@ -1,8 +1,10 @@
 from .models import Interactions
 from .database import SessionLocal
+import json
 
-def save_interaction(type, prompt, response, doc_id=None, text=None):
+def save_interaction(type, messages, response, doc_id=None, text=None):
     session = SessionLocal()
+    prompt = json.dumps(messages) if isinstance(messages, list) else messages
     try:
         if doc_id is None and type == 'upload':
             interaction = Interactions(
