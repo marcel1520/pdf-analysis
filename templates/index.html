@@ -15,6 +15,9 @@
         <input type="file" name="file" accept=".pdf" required>
         <button type="submit">Upload</button>
     </form>
+    {% if uploaded_file %}
+        <p><strong>Uploaded File</strong>{{ uploaded_file }}</p>
+    {% endif %}
 
     {% if doc_id %}
     <h2 style="text-align: center">2. Choose an Action</h2>

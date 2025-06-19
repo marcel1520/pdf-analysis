@@ -24,7 +24,7 @@ def upload():
             if not text:
                 return render_template("index.html", message="no extractable text found in the upload.")
             doc_id = save_interaction("upload", "", "", text=text)
-            return render_template("index.html", doc_id=doc_id, message='pdf uploaded.')
+            return render_template("index.html", doc_id=doc_id, message='pdf uploaded.', uploaded_file=uploaded_file.filename)
         else:
             return render_template("index.html", message="Only pdf-files are supported.")
     return render_template("index.html")
