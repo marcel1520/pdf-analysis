@@ -13,5 +13,7 @@ class Interactions(Base):
     type = Column(String(50), nullable=True)
     prompt = Column(Text, nullable=True)
     response = Column(Text, nullable=True)
+    translated_response = Column(Text, nullable=True)
+    translation_language = Column(Text, nullable=True)
     text = Column(Text, nullable=True)
     timestamp = Column(DateTime, server_default=func.now())

@@ -2,7 +2,7 @@ from .models import Interactions
 from .database import SessionLocal
 import json
 
-def save_interaction(type, messages, response, doc_id=None, text=None):
+def save_interaction(type, messages, response, doc_id=None, text=None, translated_response=None, translation_language=None):
     session = SessionLocal()
     prompt = json.dumps(messages) if isinstance(messages, list) else messages
     try:
@@ -12,7 +12,9 @@ def save_interaction(type, messages, response, doc_id=None, text=None):
                 type=type,
                 prompt=prompt,
                 response=response,
-                text=text
+                text=text,
+                translated_response=translated_response,
+                translation_language=translation_language
             )
             session.add(interaction)
             session.commit()
@@ -23,7 +25,9 @@ def save_interaction(type, messages, response, doc_id=None, text=None):
                 doc_id=doc_id,
                 type=type,
                 prompt=prompt,
-                response=response
+                response=response,
+                translated_response=translated_response,
+                translation_language=translation_language
             )
             session.add(interaction)
             session.commit()

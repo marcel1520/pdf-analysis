@@ -52,7 +52,7 @@ def get_translation(doc_id, lang):
     text = get_text_by_doc_id(doc_id)
     messages = [
         {"role": "system", "content": SYSTEM_ROLES["translation"]},
-        {"role": "user", "content": f"Provide a translation of this text:\n\n{text}"}
+        {"role": "user", "content": f"Provide a translation of this text:\n\n{text} in {lang} langauge."}
     ]
     result = call_openai(messages)
     return result, messages
@@ -66,3 +66,12 @@ def get_sentiment(doc_id):
     ]
     result = call_openai(messages)
     return result, messages
+
+
+def translate_text(text, lang):
+    messages = [
+        {"role": "system", "content": SYSTEM_ROLES["translation"]},
+        {"role": "user", "content": f"Translate the following text into {lang}: \n\n{text}"}
+    ]
+    result = call_openai(messages)
+    return result
