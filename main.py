@@ -44,36 +44,58 @@ def process():
     if action == "topic":
         result, prompt = get_topic(doc_id)
         last_action = action
+
     elif action == "summary":
         result, prompt = get_summary(doc_id)
         last_action = action
+
     elif action == "translate":
         result, prompt = get_translation(doc_id, lang)
         last_action = action
+
     elif action == "sentiment":
         result, prompt = get_sentiment(doc_id)
         last_action = action
+
     elif action == "translate_topic":
         original_text = request.form.get('original_text')
         lang = request.form.get("lang")
-        result = translate_text(original_text, lang)
+        translated_result = translate_text(original_text, lang)
         prompt = None
         message = f"Topic translation to {lang} generated successfully."
-        last_action = action
+        last_action = "topic"
+        return render_template("index.html", doc_id=doc_id,
+                        result=original_text,
+                        translated_result=translated_result,
+                        message=message,
+                        last_action=action)
+
     elif action == "translate_summary":
         original_text = request.form.get('original_text')
         lang = request.form.get("lang")
-        result = translate_text(original_text, lang)
+        translated_result = translate_text(original_text, lang)
         prompt = None
         message = f"Summary translation to {lang} generated successfully."
-        last_action = action
+        last_action = "summary"
+        return render_template("index.html", doc_id=doc_id,
+                        result=original_text,
+                        translated_result=translated_result,
+                        message=message,
+                        last_action=action)
+        
     elif action == "translate_sentiment":
         original_text = request.form.get('original_text')
         lang = request.form.get("lang")
-        result = translate_text(original_text, lang)
+        translated_result = translate_text(original_text, lang)
         prompt = None
         message = f"Sentiment translation to {lang} generated successfully."
-        last_action = action
+        last_action = "sentiment"
+        return render_template("index.html", doc_id=doc_id, 
+                               result=original_text, 
+                               translated_result=translated_result,
+                               message=message,
+                               last_action=action)
+    
     else:
         result = "Invalid action"
         prompt = None

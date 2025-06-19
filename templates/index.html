@@ -39,8 +39,13 @@
     {% endif %}
 
     {% if result %}
-        <h3>Result</h3>
+        <h3>Original Result</h3>
         <pre>{{ result }}</pre>
+    {% endif %}
+
+    {% if translated_result %}
+        <h3>Translated Result</h3>
+        <pre>{{ translated_result }}</pre>
     {% endif %}
 
     {% if last_action == 'topic' and result %}
