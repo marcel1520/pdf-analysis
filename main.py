@@ -24,6 +24,8 @@ def upload():
             if not text:
                 return render_template("index.html", message="no extractable text found in the upload.")
             token_count = count_tokens(text)
+            if token_count > 16000:
+                return render_template("index.html", message=f"Size of PDF: {token_count} tokens. Exceeds the limit of tokens that can be processed.")
             doc_id = save_interaction("upload", "", "", text=text)
             return render_template("index.html", doc_id=doc_id, 
                                    message='pdf uploaded.', 
