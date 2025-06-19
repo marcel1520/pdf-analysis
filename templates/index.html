@@ -43,6 +43,28 @@
         <pre>{{ result }}</pre>
     {% endif %}
 
+    {% if last_action == 'topic' and result %}
+        <h3>Translate Topic</h3>
+        <form action="{{ url_for('process') }}" method="post">
+            <input type="hidden" name="doc_id" value="{{ doc_id }}">
+            <input type="hidden" name="original_text" value="{{ result|e }}">
+            <label for="translate_lang">Translate Topic to:</label>
+            <input type="text" id="translate_lang" name="lang" placeholder="e.g. Spanish, French" required>
+            <button type="submit" name="action" value="translate_topic">Translate Topic</button>
+        </form>
+    {% endif %}
+    
+    {% if last_action == 'summary' and result %}
+        <h3>Translate Summary</h3>
+        <form action="{{ url_for('process') }}" method="post">
+            <input type="hidden" name="doc_id" value="{{ doc_id }}">
+            <input type="hidden" name="original_text" value="{{ result|e }}">
+            <label for="translate_lang">Translate Summary to:</label>
+            <input type="text" id="translate_lang" name="lang" placeholder="e.g. Spanish, French" required>
+            <button type="submit" name="action" value="translate_summary">Translate Summary</button>
+        </form>
+    {% endif %}
+
     {% if last_action == 'sentiment' and result %}
         <h3>Translate Sentiment</h3>
         <form action="{{ url_for('process') }}" method="post">
@@ -53,6 +75,7 @@
             <button type="submit" name="action" value="translate_sentiment">Translate Sentiment</button>
         </form>
     {% endif %}
+    
     <!-- Spinner Overlay -->
      <div id="spinner-overlay">
         <div class="spinner"></div>

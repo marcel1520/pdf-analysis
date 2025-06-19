@@ -53,6 +53,20 @@ def process():
     elif action == "sentiment":
         result, prompt = get_sentiment(doc_id)
         last_action = action
+    elif action == "translate_topic":
+        original_text = request.form.get('original_text')
+        lang = request.form.get("lang")
+        result = translate_text(original_text, lang)
+        prompt = None
+        message = f"Topic translation to {lang} generated successfully."
+        last_action = action
+    elif action == "translate_summary":
+        original_text = request.form.get('original_text')
+        lang = request.form.get("lang")
+        result = translate_text(original_text, lang)
+        prompt = None
+        message = f"Summary translation to {lang} generated successfully."
+        last_action = action
     elif action == "translate_sentiment":
         original_text = request.form.get('original_text')
         lang = request.form.get("lang")
@@ -60,7 +74,6 @@ def process():
         prompt = None
         message = f"Sentiment translation to {lang} generated successfully."
         last_action = action
-
     else:
         result = "Invalid action"
         prompt = None
