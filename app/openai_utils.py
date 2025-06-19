@@ -3,6 +3,7 @@ from openai import OpenAI
 from .crud import get_text_by_doc_id
 from dotenv import load_dotenv
 import os
+import tiktoken
 
 
 load_dotenv()
@@ -26,6 +27,12 @@ def call_openai(messages):
         messages=messages
     )
     return response.choices[0].message.content.strip()
+
+
+def count_tokens(text: str, model: str="gpt-4o-mini") -> int:
+    encoding = tiktoken.encoding_for_model(model)
+    tokens = encoding.encode(text)
+    return len(tokens)
 
 
 def get_topic(doc_id):
@@ -75,3 +82,4 @@ def translate_text(text, lang):
     ]
     result = call_openai(messages)
     return result
+

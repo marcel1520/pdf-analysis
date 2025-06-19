@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from app.pdf_extraction import extract_text_from_pdf
-from app.openai_utils import get_topic, get_summary, get_translation, get_sentiment, translate_text
+from app.openai_utils import get_topic, get_summary, get_translation, get_sentiment, translate_text, count_tokens
 from app.database import init_db
 from app.crud import save_interaction, get_text_by_doc_id
 
@@ -23,8 +23,12 @@ def upload():
             text = extract_text_from_pdf(content)
             if not text:
                 return render_template("index.html", message="no extractable text found in the upload.")
+            token_count = count_tokens(text)
             doc_id = save_interaction("upload", "", "", text=text)
-            return render_template("index.html", doc_id=doc_id, message='pdf uploaded.', uploaded_file=uploaded_file.filename)
+            return render_template("index.html", doc_id=doc_id, 
+                                   message='pdf uploaded.', 
+                                   uploaded_file=uploaded_file.filename,
+                                   token_count=token_count)
         else:
             return render_template("index.html", message="Only pdf-files are supported.")
     return render_template("index.html")

@@ -19,6 +19,13 @@
         <p><strong>Uploaded File</strong>{{ uploaded_file }}</p>
     {% endif %}
 
+    {% if token_count %}
+        <p><strong>Token Count</strong>{{ token_count }}</p>
+            {% if token_count > 16000 %}
+                <p style="color: red;"><strong>Warning:</strong>This exceeds the token limit for GPT-4o-mini (16000 tokens)</p>
+            {% endif %}
+    {% endif %}
+
     {% if doc_id %}
     <h2 style="text-align: center">2. Choose an Action</h2>
     <form action="{{ url_for('process') }}" method="post">
