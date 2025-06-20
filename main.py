@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from app.pdf_extraction import extract_text_from_pdf
 from app.openai_utils import get_topic, get_summary, get_translation, get_sentiment, translate_text, count_tokens
 from app.database import init_db
-from app.crud import save_interaction, get_text_by_doc_id
+from app.crud import save_interaction, get_text_by_doc_id, get_all_uploads
 
 
 app = Flask(__name__)
@@ -28,7 +28,8 @@ def upload():
             if token_count > 16000:
                 text = text[:16000]
                 message += "Truncated to first 16000 characters."
-            doc_id = save_interaction('upload', "", "", text=text)
+            title = uploaded_file.filename[:-4]
+            doc_id = save_interaction(type='upload', messages="", title=title, response="Uploaded PDF", text=text)
 
             return render_template("index.html", doc_id=doc_id, 
                                    message='pdf uploaded.', 
@@ -114,8 +115,21 @@ def process():
         prompt = None
     
     
-    save_interaction(action, prompt, result, doc_id)
+    save_interaction(type=action, messages=prompt, title=None, response=result, doc_id=doc_id)
     return render_template("index.html", doc_id=doc_id, result=result, message=message or f"{action.title()}  generated successfully.", last_action=last_action, model=model)
+
+
+@app.route("/history", methods=['GET'])
+def history():
+    uploads = get_all_uploads()
+    return render_template("history.html", uploads=uploads)
+
+
+@app.route("/view/<int:doc_id>")
+def view_doc(doc_id):
+    text = get_text_by_doc_id(doc_id)
+    return render_template("view_doc.html", doc_id=doc_id, text=text)
+
 
 if __name__ =="__main__":
     app.run(debug=True)

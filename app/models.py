@@ -10,6 +10,7 @@ class Interactions(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     doc_id = Column(Integer, index=True)
+    title = Column(String(100), unique=True)
     type = Column(String(50), nullable=True)
     prompt = Column(Text, nullable=True)
     response = Column(Text, nullable=True)

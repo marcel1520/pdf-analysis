@@ -15,6 +15,9 @@
         <input type="file" name="file" accept=".pdf" required>
         <button type="submit">Upload</button>
     </form>
+    <form action="{{ url_for('history') }}">
+        <button type="submit">History</button>
+    </form>
     {% if uploaded_file %}
         <p><strong>Uploaded File</strong>{{ uploaded_file }}</p>
     {% endif %}
