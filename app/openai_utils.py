@@ -1,3 +1,4 @@
+import google.generativeai as genai
 import openai
 from openai import OpenAI
 from .crud import get_text_by_doc_id
@@ -8,10 +9,14 @@ import tiktoken
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GEMINI_API_KEY=os.getenv("GEMINI_API_KEY")
 
 
 openai.api_key = OPENAI_API_KEY
 client = OpenAI(api_key=openai.api_key)
+
+genai.configure(api_key=GEMINI_API_KEY)
+model_gemini = genai.GenerativeModel("gemini-2.0-flash-exp")
 
 
 SYSTEM_ROLES = {
@@ -21,65 +26,80 @@ SYSTEM_ROLES = {
     "sentiment": "You are a sentiment analyst and your task is to extract the sentiment of the given text. Use the attributes positive, negative or neutral. In addition write a justification for your choice of no more than 5 sentences."
 }
 
-def call_openai(messages):
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=messages
-    )
-    return response.choices[0].message.content.strip()
+
+def call_model(messages, model="gpt-4o-mini"):
+    if model.startswith("gpt-"):
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages
+        )
+        return response.choices[0].message.content.strip()
+    elif model.startswith("gemini-"):
+        lines = []
+        for message in messages:
+            role = message["role"].capitalize()
+            content = message["content"]
+            lines.append(f"{role}: {content}")
+        prompt = "\n".join(lines)
+        response = model_gemini.generate_content(prompt)
+        return response.text.strip()
+    else:
+        raise ValueError(f"Unsupported model: {model}")
 
 
 def count_tokens(text: str, model: str="gpt-4o-mini") -> int:
-    encoding = tiktoken.encoding_for_model(model)
-    tokens = encoding.encode(text)
-    return len(tokens)
+    try:
+        encoding = tiktoken.encoding_for_model(model)
+    except KeyError:
+        encoding = tiktoken.get_encoding("cl100k_base")
+    return len(encoding.encode(text))
 
 
-def get_topic(doc_id):
+def get_topic(doc_id, model="gpt-4o-mini"):
     text = get_text_by_doc_id(doc_id)
     messages = [
         {"role": "system", "content": SYSTEM_ROLES["topic"]},
         {"role": "user", "content": f"Extract the topic of this text:\n\n{text}"},
     ]
-    result = call_openai(messages)
+    result = call_model(messages, model)
     return result, messages
 
 
-def get_summary(doc_id):
+def get_summary(doc_id, model="gpt-4o-mini"):
     text = get_text_by_doc_id(doc_id)
     messages = [
         {"role": "system", "content": SYSTEM_ROLES["summary"]},
         {"role": "user", "content": f"Provide a summary for this text:\n\n{text}"}
     ]
-    result = call_openai(messages)
+    result = call_model(messages, model)
     return result, messages
 
 
-def get_translation(doc_id, lang):
+def get_translation(doc_id, lang, model="gpt-4o-mini"):
     text = get_text_by_doc_id(doc_id)
     messages = [
         {"role": "system", "content": SYSTEM_ROLES["translation"]},
-        {"role": "user", "content": f"Provide a translation of this text:\n\n{text} in {lang} langauge."}
+        {"role": "user", "content": f"Provide a translation of this text:\n\n{text} in {lang} language."}
     ]
-    result = call_openai(messages)
+    result = call_model(messages, model)
     return result, messages
 
 
-def get_sentiment(doc_id):
+def get_sentiment(doc_id, model="gpt-4o-mini"):
     text = get_text_by_doc_id(doc_id)
     messages = [
         {"role": "system", "content": SYSTEM_ROLES["sentiment"]},
         {"role": "user", "content": f"Provide a sentiment analysis of this text:\n\n{text}"}
     ]
-    result = call_openai(messages)
+    result = call_model(messages, model)
     return result, messages
 
 
-def translate_text(text, lang):
+def translate_text(text, lang, model="gpt-4o-mini"):
     messages = [
         {"role": "system", "content": SYSTEM_ROLES["translation"]},
         {"role": "user", "content": f"Translate the following text into {lang}: \n\n{text}"}
     ]
-    result = call_openai(messages)
+    result = call_model(messages, model)
     return result
 

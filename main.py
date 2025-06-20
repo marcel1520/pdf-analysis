@@ -22,7 +22,7 @@ def upload():
             content = uploaded_file.read()
             text = extract_text_from_pdf(content)
             if not text:
-                return render_template("index.html", message="no extractable text found in the upload.")
+                return render_template("index.html", message="No extractable text found in the upload.")
             token_count = count_tokens(text)
             message = f"Size of PDF: {token_count} tokens."
             if token_count > 16000:
@@ -44,6 +44,7 @@ def process():
     doc_id = int(request.form['doc_id'])
     action = request.form['action']
     lang = request.form.get('lang', '')
+    model = request.form.get('model', 'gpt-4o-mini')
     
 
     result = None
@@ -51,25 +52,25 @@ def process():
     message = ""
 
     if action == "topic":
-        result, prompt = get_topic(doc_id)
+        result, prompt = get_topic(doc_id, model=model)
         last_action = action
 
     elif action == "summary":
-        result, prompt = get_summary(doc_id)
+        result, prompt = get_summary(doc_id, model=model)
         last_action = action
 
     elif action == "translate":
-        result, prompt = get_translation(doc_id, lang)
+        result, prompt = get_translation(doc_id, lang, model=model)
         last_action = action
 
     elif action == "sentiment":
-        result, prompt = get_sentiment(doc_id)
+        result, prompt = get_sentiment(doc_id, model=model)
         last_action = action
 
     elif action == "translate_topic":
         original_text = request.form.get('original_text')
         lang = request.form.get("lang")
-        translated_result = translate_text(original_text, lang)
+        translated_result = translate_text(original_text, lang, model=model)
         prompt = None
         message = f"Topic translation to {lang} generated successfully."
         last_action = "topic"
@@ -77,12 +78,13 @@ def process():
                         result=original_text,
                         translated_result=translated_result,
                         message=message,
-                        last_action=action)
+                        last_action=action,
+                        model=model)
 
     elif action == "translate_summary":
         original_text = request.form.get('original_text')
         lang = request.form.get("lang")
-        translated_result = translate_text(original_text, lang)
+        translated_result = translate_text(original_text, lang, model=model)
         prompt = None
         message = f"Summary translation to {lang} generated successfully."
         last_action = "summary"
@@ -90,12 +92,13 @@ def process():
                         result=original_text,
                         translated_result=translated_result,
                         message=message,
-                        last_action=action)
+                        last_action=action,
+                        model=model)
         
     elif action == "translate_sentiment":
         original_text = request.form.get('original_text')
         lang = request.form.get("lang")
-        translated_result = translate_text(original_text, lang)
+        translated_result = translate_text(original_text, lang, model=model)
         prompt = None
         message = f"Sentiment translation to {lang} generated successfully."
         last_action = "sentiment"
@@ -103,7 +106,8 @@ def process():
                                result=original_text, 
                                translated_result=translated_result,
                                message=message,
-                               last_action=action)
+                               last_action=action,
+                               model=model)
     
     else:
         result = "Invalid action"
@@ -111,7 +115,7 @@ def process():
     
     
     save_interaction(action, prompt, result, doc_id)
-    return render_template("index.html", doc_id=doc_id, result=result, message=message or f"{action.title()}  generated successfully.", last_action=last_action)
+    return render_template("index.html", doc_id=doc_id, result=result, message=message or f"{action.title()}  generated successfully.", last_action=last_action, model=model)
 
 if __name__ =="__main__":
     app.run(debug=True)

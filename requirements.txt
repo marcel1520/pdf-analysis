@@ -4,3 +4,4 @@ sqlalchemy
 dotenv
 PyMuPDF
 tiktoken
+google-generativeai

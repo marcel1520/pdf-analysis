@@ -31,6 +31,12 @@
     <form action="{{ url_for('process') }}" method="post">
         <input type="hidden" name="doc_id" value="{{ doc_id }}">
 
+        <label for="model">Choose Model:</label>
+        <select name="model" id="model" required>
+            <option value="gpt-4o-mini" {% if model == 'gpt-4o-mini' %}selected{% endif %}>GPT-4o-mini</option>
+            <option value="gemini-2.0-flash-exp" {% if model == 'gemini-2.0-flash-exp' %}selected{% endif %}>Gemini Flash</option>
+        </select>
+        <br><br>
         <button type="submit" name="action" value="topic">Get Topic</button>
         <button type="submit" name="action" value="summary">Get Summary</button>
         <br><br>
@@ -63,6 +69,7 @@
         <form action="{{ url_for('process') }}" method="post">
             <input type="hidden" name="doc_id" value="{{ doc_id }}">
             <input type="hidden" name="original_text" value="{{ result|e }}">
+            <input type="hidden" name="model" value="{{ model }}">
             <label for="translate_lang">Translate Topic to:</label>
             <input type="text" id="translate_lang" name="lang" placeholder="e.g. Spanish, French" required>
             <button type="submit" name="action" value="translate_topic">Translate Topic</button>
@@ -74,6 +81,7 @@
         <form action="{{ url_for('process') }}" method="post">
             <input type="hidden" name="doc_id" value="{{ doc_id }}">
             <input type="hidden" name="original_text" value="{{ result|e }}">
+            <input type="hidden" name="model" value="{{ model }}">
             <label for="translate_lang">Translate Summary to:</label>
             <input type="text" id="translate_lang" name="lang" placeholder="e.g. Spanish, French" required>
             <button type="submit" name="action" value="translate_summary">Translate Summary</button>
@@ -85,6 +93,7 @@
         <form action="{{ url_for('process') }}" method="post">
             <input type="hidden" name="doc_id" value="{{ doc_id }}">
             <input type="hidden" name="original_text" value="{{ result|e }}">
+            <input type="hidden" name="model" value="{{ model }}">
             <label for="translate_lang">Translate Sentiment to:</label>
             <input type="text" id="translate_lang" name="lang" placeholder="e.g. Spanish, French" required>
             <button type="submit" name="action" value="translate_sentiment">Translate Sentiment</button>
