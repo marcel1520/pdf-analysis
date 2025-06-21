@@ -37,8 +37,8 @@ def upload():
             token_count = count_tokens(text)
             message = f"Size of PDF: {token_count} tokens."
             if token_count > 16000:
-                message += "Truncated to first 16000 characters."
-            title = uploaded_file.filename[:-4]
+                message += "Truncated to first 16000 tokens to enable processing."
+            title = uploaded_file.filename[:-4].title()
             doc_id = save_interaction(type='upload', 
                                       messages="", 
                                       title=title, 
