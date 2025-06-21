@@ -8,7 +8,6 @@
 </head>
 <body>
     <h1>PDF AI Assistant</h1>
-    
 
     <h2 style="text-align: center">1. Upload a PDF</h2>
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
@@ -18,21 +17,17 @@
     <form action="{{ url_for('history') }}">
         <button type="submit">History</button>
     </form>
-    {% if uploaded_file %}
-        <p><strong>Uploaded File</strong>{{ uploaded_file }}</p>
-    {% endif %}
-
-    {% if token_count %}
-        <p><strong>Token Count</strong>{{ token_count }}</p>
-            {% if token_count > 16000 %}
-                <p style="color: red;"><strong style="color: red;">Warning:</strong>Token limit for GPT-4o-mini exceeded. Truncated to first 16000 tokens</p>
-            {% endif %}
-    {% endif %}
+    <div style="text-align: center;">
+        {% if uploaded_file %}
+            <p><strong>Uploaded File</strong>{{ uploaded_file }}</p>
+        {% endif %}
+    </div>
 
     {% if doc_id %}
     <h2 style="text-align: center">2. Choose an Action</h2>
     <form action="{{ url_for('process') }}" method="post">
         <input type="hidden" name="doc_id" value="{{ doc_id }}">
+        <input type="hidden" name="title" value="{{ document.title if document else '' }}">
 
         <label for="model">Choose Model:</label>
         <select name="model" id="model" required>

@@ -8,15 +8,17 @@
 </head>
 <body>
     <h1>Upload History</h1>
-    <ul>
-        {% for upload in uploads %}
-            <li>
-                <a href="{{ url_for('view_doc', doc_id=upload.doc_id) }}">Document ID: {{ upload.title }}</a>
-            </li>
-        {% else %}
-            <li>No uploads found</li>
-        {% endfor %}
-    </ul>
+    <div style="text-align: center; list-style: none;">
+        <ul>
+            {% for upload in uploads %}
+                <li style="margin-bottom: 10px;">
+                    <a href="{{ url_for('view_doc', doc_id=upload.doc_id) }}">Document ID: {{ upload.title }}</a>
+                </li>
+            {% else %}
+                <li>No uploads found</li>
+            {% endfor %}
+        </ul>
+    </div>
     <br>
     <form action="{{ url_for('home') }}">
         <button type="submit">Home</button>

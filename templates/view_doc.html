@@ -8,6 +8,9 @@
 </head>
 <body>
     <h1>Document ID: {{ doc_id }}</h1>
+    <form action="{{ url_for('history') }}">
+        <button type="submit">Back to History</button>
+    </form>
     <pre>{{ text }}</pre>
     <br>
     <form action="{{ url_for('history') }}">
